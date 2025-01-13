@@ -119,7 +119,7 @@ services:
   wings:
     image: ghcr.io/pterodactyl/wings:v1.6.1
     restart: always
-    network:
+    networks:
       - wings0
     ports:
       - "8080:8080"
@@ -132,13 +132,13 @@ services:
       WINGS_GID: 988
       WINGS_USERNAME: pterodactyl
     volumes:
-  - docker_sock:/var/run/docker.sock
-  - docker_containers:/var/lib/docker/containers/
-  - pterodactyl_config:/etc/pterodactyl/
-  - pterodactyl_data:/var/lib/pterodactyl/
-  - pterodactyl_logs:/var/log/pterodactyl/
-  - pterodactyl_tmp:/tmp/pterodactyl/
-  - ssl_certs:/etc/ssl/certs:ro
+      - docker_sock:/var/run/docker.sock
+      - docker_containers:/var/lib/docker/containers/
+      - pterodactyl_config:/etc/pterodactyl/
+      - pterodactyl_data:/var/lib/pterodactyl/
+      - pterodactyl_logs:/var/log/pterodactyl/
+      - pterodactyl_tmp:/tmp/pterodactyl/
+      - ssl_certs:/etc/ssl/certs:ro
 
 volumes:
   docker_sock:
@@ -156,8 +156,8 @@ networks:
     ipam:
       config:
         - subnet: "127.21.0.0/16"
-      driver_opts:
-        com.docker.network.bridge.name: wings0
+    driver_opts:
+      com.docker.network.bridge.name: wings0
 ```
 
 ### 3. Configure and Start Wings
