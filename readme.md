@@ -41,7 +41,7 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - "/srv/pterodactyl/database:/var/lib/mysql"
+      - db:/var/lib/mysql
     environment:
       <<: *db-environment
       MYSQL_DATABASE: "panel"
@@ -59,10 +59,17 @@ services:
       - database
       - cache
     volumes:
-      - "/srv/pterodactyl/var/:/app/var"
-      - "/srv/pterodactyl/nginx/:/etc/nginx/http.d/"
-      - "/srv/pterodactyl/certs/:/etc/letsencrypt/"
-      - "/srv/pterodactyl/logs/:/app/storage/logs/"
+      - panel_var:/app/var 
+      - panel_nginx:/etc/nginx/http.d/
+      - panel_certs:/etc/letsencrypt/
+      - panel_logs:/app/storage/logs/
+volumes:
+  db:
+  panel_var:
+  panel_nginx:
+  panel_certs:
+  panel_logs:
+
     environment:
       <<: [*panel-environment, *mail-environment]
       DB_HOST: "database"
@@ -125,13 +132,23 @@ services:
       WINGS_GID: 988
       WINGS_USERNAME: pterodactyl
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/var/lib/docker/containers/:/var/lib/docker/containers/"
-      - "/etc/pterodactyl/:/etc/pterodactyl/"
-      - "/var/lib/pterodactyl/:/var/lib/pterodactyl/"
-      - "/var/log/pterodactyl/:/var/log/pterodactyl/"
-      - "/tmp/pterodactyl/:/tmp/pterodactyl"
-      - "/etc/ssl/certs:/etc/ssl/certs:ro"
+  - docker_sock:/var/run/docker.sock
+  - docker_containers:/var/lib/docker/containers/
+  - pterodactyl_config:/etc/pterodactyl/
+  - pterodactyl_data:/var/lib/pterodactyl/
+  - pterodactyl_logs:/var/log/pterodactyl/
+  - pterodactyl_tmp:/tmp/pterodactyl/
+  - ssl_certs:/etc/ssl/certs:ro
+
+volumes:
+  docker_sock:
+  docker_containers:
+  pterodactyl_config:
+  pterodactyl_data:
+  pterodactyl_logs:
+  pterodactyl_tmp:
+  ssl_certs:
+
 networks:
   wings0:
     name: wings0
